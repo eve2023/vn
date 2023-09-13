@@ -2,7 +2,7 @@
 Copyright (c) 2023 Eve
 Licensed under the GNU General Public License version 3 (GPLv3)
 *************************************************************************
-VN.C: eVs's general Infrastructure
+VN.C: eVe's general Infrastructure
 *************************************************************************
 VN is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -33,12 +33,23 @@ extern ReadFunction v_read;
 #define read v_read
 #endif
 
-void vnstr_init(char *buf)
+void vnstr_setlen(char *buf, unsigned short len)
 {
-	int len = strlen(buf + 2);
-
 	buf[0] = (len >> 8) & 0xff;
 	buf[1] = len & 0xff;
+}
+
+void vnstr_init(char *buf)
+{
+	size_t len = strlen(buf + 2);
+	vnstr_setlen(buf, len);
+}
+
+void vnstr_fromc(char *buf, char *cs)
+{
+	size_t len = strlen(cs);
+	memcpy(buf + 2, cs, len);
+	vnstr_setlen(buf, len);
 }
 
 unsigned short vnstr_len(char *s)
@@ -46,6 +57,58 @@ unsigned short vnstr_len(char *s)
 	return ntohs(*(unsigned short *)s);
 }
 
+void vnstr_toc(char *buf, char *s)
+{
+	unsigned short len = vnstr_len(s);
+	memcpy(buf, s + 2, len);
+	buf[len] = '\0';
+}
+
+int vnstr_cmp(char *s, char *t)
+{
+	unsigned short l = vnstr_len(s);
+	unsigned short m = vnstr_len(t);
+	int min_len = (l < m) ? l : m;
+	int cmp_result = memcmp(s + 2, t + 2, min_len);
+
+	if (cmp_result == 0)
+	{
+		return l - m;
+	}
+
+	return cmp_result;
+}
+
+void vnstr_append(char *dest, char *src)
+{
+	unsigned short dest_len = vnstr_len(dest);
+	unsigned short src_len = vnstr_len(src);
+	unsigned short new_len = dest_len + src_len;
+
+	vnstr_setlen(dest, new_len);
+	memcpy(dest + 2 + dest_len, src + 2, src_len);
+}
+
+int vnstr_pos(char *s, char *t)
+{
+	unsigned short l = vnstr_len(s);
+	unsigned short m = vnstr_len(t);
+
+	if (m > l)
+		return -1;
+
+	for (int i = 0; i <= l - m; i++)
+	{
+		if (memcmp(s + 2 + i, t + 2, m) == 0)
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+// TODO refactor this with vnstr_str
 void vnstra_init(char **stra, char *buf, char *sep)
 {
 	unsigned short lsep = vnstr_len(sep);

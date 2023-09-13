@@ -2,7 +2,7 @@
 Copyright (c) 2023 Eve
 Licensed under the GNU General Public License version 3 (GPLv3)
 *************************************************************************
-VN.C: eVs's general Infrastructure
+VN.C: eVe's general Infrastructure
 *************************************************************************
 VN is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
