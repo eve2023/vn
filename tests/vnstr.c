@@ -29,21 +29,104 @@ with VN. If not, see <https://www.gnu.org/licenses/>.
 
 void vnstr_init(char *buf);
 
+void vnstr_fromc(char *buf, char *cs);
+
 unsigned short vnstr_len(char *s);
+
+void vnstr_toc(char *buf, char *s);
+
+int vnstr_cmp(char *s, char *t);
+
+void vnstr_append(char *dest, char *src);
+
+int vnstr_pos(char *s, char *t);
 
 void vnstra_init(char **stra, char *buf, char *sep);
 
-int main(void)
+void vn_string_map(char *r, char *kvs[], char *s);
+
+void test_vnstr_init()
 {
-	// === TEST vnstr_init ===
 	char *s = strdup("%%string");
 	vnstr_init(s);
 	assert(vnstr_len(s) == 6);
+
 	free(s);
-
 	printf("TEST vnstr_init PASS\n");
+}
 
-	// === TEST vnstra_init ===
+void test_vnstr_fromc()
+{
+	char *s = strdup("..hello world");
+	vnstr_init(s);
+	char *cs = "hello world";
+	char buf[50];
+	vnstr_fromc(buf, cs);
+	assert(vnstr_cmp(buf, s) == 0);
+
+	free(s);
+	printf("TEST vnstr_fromc PASS\n");
+}
+
+void test_vnstr_len()
+{
+	char *s = strdup("..hello world");
+	vnstr_init(s);
+	assert(vnstr_len(s) == 11);
+
+	free(s);
+	printf("TEST vnstr_len PASS\n");
+}
+
+void test_vnstr_toc()
+{
+	char *s = strdup("..hello world");
+	vnstr_init(s);
+	char cbuf[50];
+	vnstr_toc(cbuf, s);
+	assert(strcmp(cbuf, "hello world") == 0);
+
+	free(s);
+	printf("TEST vnstr_toc PASS\n");
+}
+
+void test_vnstr_cmp()
+{
+	char s[15] = "..hello world";
+	char t[15] = "..hello world";
+	vnstr_init(s);
+	vnstr_init(t);
+	assert(vnstr_cmp(s, t) == 0);
+	
+	printf("TEST vnstr_cmp PASS\n");
+}
+
+void test_vnstr_append()
+{
+	char s[15] = "..hello w";
+	char ss[15] = "..orld";
+	char t[15] = "..hello world";
+	vnstr_init(s);
+	vnstr_init(ss);
+	vnstr_init(t);
+
+	vnstr_append(s, ss);
+	assert(vnstr_cmp(s, t) == 0);
+
+	printf("TEST vnstr_append PASS\n");
+}
+
+void test_vnstr_pos()
+{
+	char s[15] = "..hello test";
+	char t[10] = "..test";
+	assert(vnstr_pos(s, t) == 6);
+
+	printf("TEST vnstr_pos PASS\n");
+}
+
+void test_vnstra_init()
+{
 	char *bu0 = "%%html%%text/html%%htm%%text/html%%css%%text/css%%js"
 		"%%application/javascript%%txt%%text/plain%%c%%text/plain"
 		"%%png%%image/png%%svg%%image/svg+xml%%";
@@ -63,4 +146,35 @@ int main(void)
 	free(buf);
 
 	printf("TEST vnstra_init PASS\n");
+}
+
+void test_vn_string_map()
+{
+	char buf[200] = "..html..text/html..htm..text/html..css..text/css..js"
+		"..application/javascript..txt..text/plain..c..text/plain"
+		"..png..image/png..svg..image/svg+xml..";
+	char sep[5] = "....";
+	char *stra[17];
+	vnstr_init(sep);
+	vnstra_init(stra, buf, sep);
+	stra[16] = NULL;
+
+	char r[30];
+	vn_string_map(r, stra, stra[0]);
+	assert(vnstr_cmp(r, stra[1]) == 0);
+	vn_string_map(r, stra, stra[10]);
+	assert(vnstr_cmp(r, stra[11]) == 0);
+
+	printf("TEST vn_string_map PASS\n");
+}
+
+int main(void)
+{
+	test_vnstr_init();
+	test_vnstr_fromc();
+	test_vnstr_len();
+	test_vnstr_toc();
+	test_vnstr_cmp();
+	test_vnstra_init();
+	test_vn_string_map();
 }

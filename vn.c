@@ -277,30 +277,30 @@ void vn_puts(int fd, const void *buf, size_t len)
     }
 }
 
-char *vn_string_map(char *kvs[], char *s)
+void vn_string_map(char *r, char *kvs[], char *s)
 {
-  // TODO more accurate return string length
-  char *r = malloc(2 * strlen(s) + 20);
+  size_t len = vnstr_len(s);
+  size_t z = 0;
+  while (kvs[z++]); // find count of key-value pairs
 
-  size_t len = strlen(s);
-  size_t i, j, k;
-  size_t z;
-  while (kvs[z++]);
-
+  int i, j, k;
   i = 0;
-  while (i < len)
+  for (i = 0, j = 0; i < len;)
     {
       for (k = 0; k < z; k += 2)
 	{
-	  if (strcmp(kvs[k], s+i) == 0)
+	  if (vnstr_cmp(kvs[k], s+i) == 0)
 	    {
-	      strcpy(r+j, kvs[k+1]);
-	      i += strlen(kvs[k]);
-	      j += strlen(kvs[k+1]);
+	      strcpy(r+2+j, kvs[k+1]+2);
+	      i += vnstr_len(kvs[k]);
+	      j += vnstr_len(kvs[k+1]);
 	      goto next_match;
 	    }
 	}
-      i++, j++;
+
+      r[2+j++] = s[2+i++];
     next_match:
     }
+
+  vnstr_setlen(r, j);
 }
