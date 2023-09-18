@@ -51,5 +51,4 @@ int main() {
 This project welcomes contributions and suggestions. Please feel free to submit pull requests or open issues on the repository's GitHub page.
 
 ## License
-[GNU General Public License version 3 (GPLv3)](https://www.gnu.org/licenses/gpl-3.0)
-
+Licensed under the New BSD License.
