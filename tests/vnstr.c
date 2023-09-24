@@ -1,21 +1,30 @@
 /*
-Copyright (c) 2023 Eve
-Licensed under the GNU General Public License version 3 (GPLv3)
+*************************************************************************
+ * Copyright (c) 2023 Eve
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
 *************************************************************************
 VN.C: eVe's general Infrastructure
-*************************************************************************
-VN is free software; you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any
-later version.
-
-VN is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-details.
-
-You should have received a copy of the GNU General Public License along
-with VN. If not, see <https://www.gnu.org/licenses/>.
 *************************************************************************
   gcc vn.c tests/vnstr.c -o test_vnstr
 */
@@ -51,42 +60,38 @@ void test_vnstr_init()
 	vnstr_init(s);
 	assert(vnstr_len(s) == 6);
 
-	free(s);
 	printf("TEST vnstr_init PASS\n");
 }
 
 void test_vnstr_fromc()
 {
-	char *s = strdup("..hello world");
+	char s[15] = "..hello world";
 	vnstr_init(s);
 	char *cs = "hello world";
 	char buf[50];
 	vnstr_fromc(buf, cs);
 	assert(vnstr_cmp(buf, s) == 0);
 
-	free(s);
 	printf("TEST vnstr_fromc PASS\n");
 }
 
 void test_vnstr_len()
 {
-	char *s = strdup("..hello world");
+	char s[15] = "..hello world";
 	vnstr_init(s);
 	assert(vnstr_len(s) == 11);
 
-	free(s);
 	printf("TEST vnstr_len PASS\n");
 }
 
 void test_vnstr_toc()
 {
-	char *s = strdup("..hello world");
+	char s[15] = "..hello world";
 	vnstr_init(s);
 	char cbuf[50];
 	vnstr_toc(cbuf, s);
 	assert(strcmp(cbuf, "hello world") == 0);
 
-	free(s);
 	printf("TEST vnstr_toc PASS\n");
 }
 
@@ -127,12 +132,11 @@ void test_vnstr_pos()
 
 void test_vnstra_init()
 {
-	char *bu0 = "%%html%%text/html%%htm%%text/html%%css%%text/css%%js"
+	char buf[200] = "%%html%%text/html%%htm%%text/html%%css%%text/css%%js"
 		"%%application/javascript%%txt%%text/plain%%c%%text/plain"
 		"%%png%%image/png%%svg%%image/svg+xml%%";
-	char *buf = strdup(bu0);
 	char *stra[20];
-	char *sep = strdup("%%%%");
+	char sep[5] = "%%%%";
 	vnstr_init(sep);
 	assert(vnstr_len(sep) == 2);
 	vnstra_init(stra, buf, sep);
@@ -142,8 +146,6 @@ void test_vnstra_init()
 	assert(vnstr_len(stra[3]) == 9);
 	assert(vnstr_len(stra[14]) == 3);
 	assert(vnstr_len(stra[15]) == 13);
-	free(sep);
-	free(buf);
 
 	printf("TEST vnstra_init PASS\n");
 }
