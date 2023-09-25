@@ -38,6 +38,8 @@ extern ReadFunction v_read;
 #define read v_read
 #endif
 
+// TODO missing strcpy
+
 void vnstr_setlen(char *buf, unsigned short len)
 {
 	buf[0] = (len >> 8) & 0xff;
@@ -57,7 +59,7 @@ void vnstr_fromc(char *buf, char *cs)
 	vnstr_setlen(buf, len);
 }
 
-unsigned short vnstr_len(char *s)
+unsigned short vnstr_len(const char *s)
 {
 	return ntohs(*(unsigned short *)s);
 }
@@ -67,6 +69,13 @@ void vnstr_toc(char *buf, char *s)
 	unsigned short len = vnstr_len(s);
 	memcpy(buf, s + 2, len);
 	buf[len] = '\0';
+}
+
+void vnstr_copy(char *dst, const char *src)
+{
+	unsigned short len = vnstr_len(src);
+	vnstr_setlen(dst, len);
+	memcpy(dst + 2, src + 2, len);
 }
 
 int vnstr_cmp(char *s, char *t)

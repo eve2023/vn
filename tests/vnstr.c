@@ -44,6 +44,8 @@ unsigned short vnstr_len(char *s);
 
 void vnstr_toc(char *buf, char *s);
 
+void vnstr_copy(char *dst, const char *src);
+
 int vnstr_cmp(char *s, char *t);
 
 void vnstr_append(char *dest, char *src);
@@ -56,7 +58,7 @@ void vn_string_map(char *r, char *kvs[], char *s);
 
 void test_vnstr_init()
 {
-	char *s = strdup("%%string");
+	char s[9] = "..string";
 	vnstr_init(s);
 	assert(vnstr_len(s) == 6);
 
@@ -95,6 +97,19 @@ void test_vnstr_toc()
 	printf("TEST vnstr_toc PASS\n");
 }
 
+void test_vnstr_copy()
+{
+	char s[15] = "..hello world";
+	char t[15];
+	unsigned short len;
+
+	vnstr_init(s);
+	vnstr_copy(t, s);
+	assert(memcmp(s, t, 13) == 0);
+
+	printf("TEST vnstr_copy PASS\n");
+}
+
 void test_vnstr_cmp()
 {
 	char s[15] = "..hello world";
@@ -125,6 +140,9 @@ void test_vnstr_pos()
 {
 	char s[15] = "..hello test";
 	char t[10] = "..test";
+
+	vnstr_init(s);
+	vnstr_init(t);
 	assert(vnstr_pos(s, t) == 6);
 
 	printf("TEST vnstr_pos PASS\n");
@@ -176,7 +194,10 @@ int main(void)
 	test_vnstr_fromc();
 	test_vnstr_len();
 	test_vnstr_toc();
+	test_vnstr_copy();
 	test_vnstr_cmp();
+	test_vnstr_append();
+	test_vnstr_pos();
 	test_vnstra_init();
 	test_vn_string_map();
 }
